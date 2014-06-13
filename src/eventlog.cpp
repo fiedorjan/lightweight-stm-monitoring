@@ -13,16 +13,54 @@
 
 #include "eventlog.h"
 
+#include <assert.h>
 #include <stdio.h>
+
+#include <iostream>
+#include <map>
+#include <string>
 
 EventLog g_eventLog[EVENTLOG_THREADS];
 
-void printEvents()
+typedef struct TxInfo_s
 {
-  for (std::vector< Event >::iterator it = g_eventLog[0].events.begin();
-    it != g_eventLog[0].events.end(); it++)
+  unsigned long started;
+} TxInfo;
+
+void printStatistics()
+{
+  long txStarted = 0;
+  std::map< std::string, TxInfo > txInfoTable;
+
+  for (int i = 0; i < EVENTLOG_THREADS; i++)
   {
-    printf("%s, %d\n", it->file, it->line);
+    for (std::vector< Event >::iterator it = g_eventLog[i].events.begin();
+      it != g_eventLog[i].events.end(); it++)
+    {
+      TxInfo& txInfo = txInfoTable[std::string(it->file) + ":" + std::to_string(it->line)];
+
+      switch (it->type)
+      {
+        case TX_START:
+          ++txStarted;
+          ++txInfo.started;
+          break;
+        default:
+          assert(false);
+          break;
+      }
+    }
+  }
+
+  std::cout << "Global Statistics\n";
+  std::cout << "  Transactions started: " << txStarted << "\n";
+  std::cout << "Per-Transaction-Type Statistics\n";
+
+  for (std::map< std::string, TxInfo >::iterator it = txInfoTable.begin();
+    it != txInfoTable.end(); it++)
+  {
+    std::cout << "  Transaction " << it->first << "\n"
+      << "    Transactions started: " << it->second.started << "\n";
   }
 }
 

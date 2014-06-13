@@ -18,14 +18,24 @@
 
 #define EVENTLOG_THREADS 8
 
-#define LOG_EVENT(tid, file, line) g_eventLog[tid].events.push_back(Event(file, line))
+#define LOG_EVENT(type, tid, file, line) g_eventLog[tid].events.push_back(Event(type, file, line))
+
+typedef enum EventType_e
+{
+  TX_START,
+  TX_COMMIT,
+  TX_ABORT,
+  TX_READ,
+  TX_WRITE
+} EventType;
 
 typedef struct Event_s
 {
+  EventType type;
   const char* file;
   unsigned long line;
 
-  Event_s(const char* f, unsigned long l) : file(f), line(l) {}
+  Event_s(EventType t, const char* f, unsigned long l) : type(t), file(f), line(l) {}
 } Event;
 
 typedef struct EventLog_s
@@ -35,7 +45,7 @@ typedef struct EventLog_s
 
 extern EventLog g_eventLog[EVENTLOG_THREADS];
 
-void printEvents();
+void printStatistics();
 
 #endif /* __EVENTLOG_H__ */
 

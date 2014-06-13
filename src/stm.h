@@ -50,7 +50,7 @@
 #define STM_RESTART()                   TxAbort(STM_SELF)
 
 #define STM_STARTUP()                   TxOnce()
-#define STM_SHUTDOWN()                  printEvents(); TxShutdown()
+#define STM_SHUTDOWN()                  TxShutdown(); printStatistics()
 
 #define STM_NEW_THREAD()                TxNewThread()
 #define STM_INIT_THREAD(t, id)          TxInitThread(t, id)
@@ -67,7 +67,7 @@
                                             STM_JMPBUF_T STM_JMPBUF; \
                                             int STM_RO_FLAG = isReadOnly; \
                                             sigsetjmp(STM_JMPBUF, 1); \
-                                            LOG_EVENT(*(long*)STM_SELF, __FILE__, __LINE__); \
+                                            LOG_EVENT(TX_START, *(long*)STM_SELF, __FILE__, __LINE__); \
                                             TxStart(STM_SELF, &STM_JMPBUF, &STM_RO_FLAG); \
                                         } while (0) /* enforce comma */
 

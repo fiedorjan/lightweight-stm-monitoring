@@ -15,7 +15,7 @@ export STAMP_PROGRAMS = bayes genome intruder kmeans labyrinth ssca2 vacation ya
 all: eventlog tl2 stamp
 
 eventlog:
-	g++ -c src/eventlog.cpp
+	g++ -std=c++0x -c src/eventlog.cpp
 	ar cr libeventlog.a eventlog.o
 
 tl2:
