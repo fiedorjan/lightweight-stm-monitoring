@@ -4,28 +4,49 @@
 # File:      Makefile
 # Author:    Jan Fiedor (fiedorjan@centrum.cz)
 # Date:      Created 2014-06-12
-# Date:      Last Update 2014-06-12
-# Version:   0.1
+# Date:      Last Update 2014-06-13
+# Version:   0.2
 #
 
 export TL2_HOME ?= ./tl2-x86-0.9.6
 export STAMP_HOME ?= ./stamp-0.9.10
 export STAMP_PROGRAMS = bayes genome intruder kmeans labyrinth ssca2 vacation yada
 
-all: tl2 stamp
+all: eventlog tl2 stamp
+
+eventlog:
+	g++ -c src/eventlog.cpp
+	ar cr libeventlog.a eventlog.o
 
 tl2:
-	make -C $(TL2_HOME)
+	$(MAKE) -C $(TL2_HOME)
 
-stamp:
+stamp: stamp-patch stamp-compile stamp-restore
+
+stamp-patch:
 	cp $(STAMP_HOME)/common/Defines.common.mk $(STAMP_HOME)/common/Defines.common.mk.orig
 	sed -i -e 's|^STM.*|STM := $(TL2_HOME)|' $(STAMP_HOME)/common/Defines.common.mk
 	sed -i -e 's|^CFLAGS   += -I.*|CFLAGS   += -I$$(LIB) -I$(shell pwd)/src|' $(STAMP_HOME)/common/Defines.common.mk
-	for program in $(STAMP_PROGRAMS); do make -C $(STAMP_HOME)/$$program -f Makefile.stm; done
+	cp $(STAMP_HOME)/common/Makefile.stm $(STAMP_HOME)/common/Makefile.stm.orig
+	sed -i -e 's|^LIBS.*|LIBS     += -ltl2 -leventlog|' $(STAMP_HOME)/common/Makefile.stm
+	sed -i -e 's|^LDFLAGS.*|LDFLAGS  += -L$$(STM) -L$(shell pwd)|' $(STAMP_HOME)/common/Makefile.stm
+	cp $(STAMP_HOME)/common/Makefile.common $(STAMP_HOME)/common/Makefile.common.orig
+	sed -i -e 's|CC|CPP|' $(STAMP_HOME)/common/Makefile.common
+	sed -i -e 's|CFLAGS|CPPFLAGS|' $(STAMP_HOME)/common/Makefile.common
+
+stamp-compile:
+	for program in $(STAMP_PROGRAMS); do \
+    $(MAKE) -C $(STAMP_HOME)/$$program -f Makefile.stm || ($(MAKE) stamp-restore && false); \
+  done
+
+stamp-restore:
 	mv $(STAMP_HOME)/common/Defines.common.mk.orig $(STAMP_HOME)/common/Defines.common.mk
+	mv $(STAMP_HOME)/common/Makefile.stm.orig $(STAMP_HOME)/common/Makefile.stm
+	mv $(STAMP_HOME)/common/Makefile.common.orig $(STAMP_HOME)/common/Makefile.common
 
 clean:
-	make -C $(TL2_HOME) clean
-	for program in $(STAMP_PROGRAMS); do make -C $(STAMP_HOME)/$$program -f Makefile.stm clean; done
+	rm -rf *.a *.o
+	$(MAKE) -C $(TL2_HOME) clean
+	for program in $(STAMP_PROGRAMS); do $(MAKE) -C $(STAMP_HOME)/$$program -f Makefile.stm clean; done
 
 # End of file Makefile
