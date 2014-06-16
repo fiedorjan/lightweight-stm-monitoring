@@ -4,8 +4,8 @@
 # File:      Makefile
 # Author:    Jan Fiedor (fiedorjan@centrum.cz)
 # Date:      Created 2014-06-12
-# Date:      Last Update 2014-06-13
-# Version:   0.2
+# Date:      Last Update 2014-06-16
+# Version:   0.2.1
 #
 
 export TL2_HOME ?= ./tl2-x86-0.9.6
@@ -24,13 +24,16 @@ tl2:
 stamp: stamp-patch stamp-compile stamp-restore
 
 stamp-patch:
-	cp $(STAMP_HOME)/common/Defines.common.mk $(STAMP_HOME)/common/Defines.common.mk.orig
+	mv -n $(STAMP_HOME)/common/Defines.common.mk $(STAMP_HOME)/common/Defines.common.mk.orig
+	cp $(STAMP_HOME)/common/Defines.common.mk.orig $(STAMP_HOME)/common/Defines.common.mk
 	sed -i -e 's|^STM.*|STM := $(TL2_HOME)|' $(STAMP_HOME)/common/Defines.common.mk
 	sed -i -e 's|^CFLAGS   += -I.*|CFLAGS   += -I$$(LIB) -I$(shell pwd)/src|' $(STAMP_HOME)/common/Defines.common.mk
-	cp $(STAMP_HOME)/common/Makefile.stm $(STAMP_HOME)/common/Makefile.stm.orig
+	mv -n $(STAMP_HOME)/common/Makefile.stm $(STAMP_HOME)/common/Makefile.stm.orig
+	cp $(STAMP_HOME)/common/Makefile.stm.orig $(STAMP_HOME)/common/Makefile.stm
 	sed -i -e 's|^LIBS.*|LIBS     += -ltl2 -leventlog|' $(STAMP_HOME)/common/Makefile.stm
 	sed -i -e 's|^LDFLAGS.*|LDFLAGS  += -L$$(STM) -L$(shell pwd)|' $(STAMP_HOME)/common/Makefile.stm
-	cp $(STAMP_HOME)/common/Makefile.common $(STAMP_HOME)/common/Makefile.common.orig
+	mv -n $(STAMP_HOME)/common/Makefile.common $(STAMP_HOME)/common/Makefile.common.orig
+	cp $(STAMP_HOME)/common/Makefile.common.orig $(STAMP_HOME)/common/Makefile.common
 	sed -i -e 's|CC|CPP|' $(STAMP_HOME)/common/Makefile.common
 	sed -i -e 's|CFLAGS|CPPFLAGS|' $(STAMP_HOME)/common/Makefile.common
 
