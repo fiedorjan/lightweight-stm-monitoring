@@ -5,12 +5,12 @@
 # Author:    Jan Fiedor (fiedorjan@centrum.cz)
 # Date:      Created 2014-06-12
 # Date:      Last Update 2014-06-16
-# Version:   0.3.1
+# Version:   0.3.2
 #
 
 export TL2_HOME ?= $(shell pwd)/tl2-x86-0.9.6
 export STAMP_HOME ?= $(shell pwd)/stamp-0.9.10
-export STAMP_PROGRAMS = bayes genome intruder kmeans labyrinth ssca2 vacation yada
+export STAMP_PROGRAMS = kmeans vacation # bayes genome intruder kmeans labyrinth ssca2 vacation yada
 
 all: eventlog tl2 stamp
 
