@@ -47,7 +47,10 @@
 
 
 #define STM_VALID()                     (1)
-#define STM_RESTART()                   TxAbort(STM_SELF)
+#define STM_RESTART()                   do { \
+                                            LOG_EVENT(TX_ABORT, *(long*)STM_SELF, __FILE__, __LINE__); \
+                                            TxAbort(STM_SELF); \
+                                        } while (0) /* enforce comma */
 
 #define STM_STARTUP()                   TxOnce()
 #define STM_SHUTDOWN()                  TxShutdown(); printStatistics()
@@ -73,7 +76,12 @@
 
 #define STM_BEGIN_RD()                  STM_BEGIN(1)
 #define STM_BEGIN_WR()                  STM_BEGIN(0)
-#define STM_END()                       TxCommit(STM_SELF)
+#define STM_END()                       do { \
+                                            if (TxCommit(STM_SELF)) \
+                                              LOG_EVENT(TX_COMMIT, *(long*)STM_SELF, __FILE__, __LINE__); \
+                                            else \
+                                              LOG_EVENT(TX_ABORT, *(long*)STM_SELF, __FILE__, __LINE__); \
+                                        } while (0) /* enforce comma */
 
 typedef volatile intptr_t               vintp;
 
