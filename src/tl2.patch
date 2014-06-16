@@ -1,0 +1,13 @@
+--- tl2.c.orig	2008-09-09 00:41:02.000000000 +0200
++++ tl2.c	2014-06-16 13:17:22.280314922 +0200
+@@ -96,7 +96,9 @@
+     NADA
+ } ManifestContants;
+ 
+-#  define PROF_STM_ABORT_BEGIN()        /* nothing */
++#include "eventlog.h"
++
++#  define PROF_STM_ABORT_BEGIN()        LOG_EVENT(TX_ABORT, Self->UniqID, __FILE__, __LINE__)
+ #  define PROF_STM_ABORT_END()          /* nothing */
+ #  define PROF_STM_COMMIT_BEGIN()       /* nothing */
+ #  define PROF_STM_COMMIT_END()         /* nothing */

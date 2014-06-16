@@ -5,7 +5,7 @@
 # Author:    Jan Fiedor (fiedorjan@centrum.cz)
 # Date:      Created 2014-06-12
 # Date:      Last Update 2014-06-16
-# Version:   0.2.1
+# Version:   0.3
 #
 
 export TL2_HOME ?= ./tl2-x86-0.9.6
@@ -18,8 +18,23 @@ eventlog:
 	g++ -std=c++0x -c src/eventlog.cpp
 	ar cr libeventlog.a eventlog.o
 
-tl2:
+tl2: tl2-patch tl2-compile tl2-restore
+
+tl2-patch:
+	mv -n $(TL2_HOME)/Makefile $(TL2_HOME)/Makefile.orig
+	cp $(TL2_HOME)/Makefile.orig $(TL2_HOME)/Makefile
+	sed -i -e 's|^CFLAGS.*|CFLAGS  := -g -Wall -Winline -O3 -I$(shell pwd)/src|' $(TL2_HOME)/Makefile
+	sed -i -e 's|gcc|g++|' $(TL2_HOME)/Makefile
+	mv -n $(TL2_HOME)/tl2.c $(TL2_HOME)/tl2.c.orig
+	cp $(TL2_HOME)/tl2.c.orig $(TL2_HOME)/tl2.c
+	patch -d $(TL2_HOME) -u -i $(shell pwd)/src/tl2.patch
+
+tl2-compile:
 	$(MAKE) -C $(TL2_HOME)
+
+tl2-restore:
+	mv $(TL2_HOME)/tl2.c.orig $(TL2_HOME)/tl2.c
+	mv $(TL2_HOME)/Makefile.orig $(TL2_HOME)/Makefile
 
 stamp: stamp-patch stamp-compile stamp-restore
 
