@@ -8,7 +8,7 @@
  * @author    Jan Fiedor (fiedorjan@centrum.cz)
  * @date      Created 2014-06-13
  * @date      Last Update 2014-06-16
- * @version   0.3
+ * @version   0.4
  */
 
 #include "eventlog.h"
@@ -19,6 +19,21 @@
 #include <iostream>
 #include <map>
 #include <string>
+#include <vector>
+
+typedef struct Event_s
+{
+  EventType type;
+  const char* file;
+  unsigned long line;
+
+  Event_s(EventType t, const char* f, unsigned long l) : type(t), file(f), line(l) {}
+} Event;
+
+typedef struct EventLog_s
+{
+  std::vector< Event > events;
+} EventLog;
 
 EventLog g_eventLog[EVENTLOG_THREADS];
 
@@ -30,6 +45,11 @@ typedef struct TxInfo_s
   unsigned long reads;
   unsigned long writes;
 } TxInfo;
+
+void logEvent(long tid, EventType type, const char* file, unsigned long line)
+{
+  g_eventLog[tid].events.push_back(Event(type, file, line));
+}
 
 void printStatistics()
 {

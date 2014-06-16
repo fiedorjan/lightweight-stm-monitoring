@@ -85,13 +85,13 @@
 
 typedef volatile intptr_t               vintp;
 
-inline intptr_t TxReadWrapper(Thread* Self, volatile intptr_t* Addr)
+static __attribute__((always_inline)) intptr_t TxReadWrapper(Thread* Self, volatile intptr_t* Addr)
 {
   LOG_EVENT(TX_READ, *(long*)STM_SELF, __FILE__, __LINE__);
   return TxLoad(Self, Addr);
 }
 
-inline void TxWriteWrapper(Thread* Self, volatile intptr_t* addr, intptr_t valu)
+static __attribute__((always_inline)) void TxWriteWrapper(Thread* Self, volatile intptr_t* addr, intptr_t valu)
 {
   LOG_EVENT(TX_WRITE, *(long*)STM_SELF, __FILE__, __LINE__);
   TxStore(Self, addr, valu);

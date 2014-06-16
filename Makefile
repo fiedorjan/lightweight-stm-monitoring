@@ -5,12 +5,12 @@
 # Author:    Jan Fiedor (fiedorjan@centrum.cz)
 # Date:      Created 2014-06-12
 # Date:      Last Update 2014-06-16
-# Version:   0.3.2
+# Version:   0.3.3
 #
 
 export TL2_HOME ?= $(shell pwd)/tl2-x86-0.9.6
 export STAMP_HOME ?= $(shell pwd)/stamp-0.9.10
-export STAMP_PROGRAMS = kmeans vacation # bayes genome intruder kmeans labyrinth ssca2 vacation yada
+export STAMP_PROGRAMS = bayes genome intruder kmeans labyrinth ssca2 vacation yada
 
 all: eventlog tl2 stamp
 
@@ -24,7 +24,6 @@ tl2-patch:
 	mv -n $(TL2_HOME)/Makefile $(TL2_HOME)/Makefile.orig
 	cp $(TL2_HOME)/Makefile.orig $(TL2_HOME)/Makefile
 	sed -i -e 's|^CFLAGS.*|CFLAGS  := -g -Wall -Winline -O3 -I$(shell pwd)/src|' $(TL2_HOME)/Makefile
-	sed -i -e 's|gcc|g++|' $(TL2_HOME)/Makefile
 	mv -n $(TL2_HOME)/tl2.c $(TL2_HOME)/tl2.c.orig
 	cp $(TL2_HOME)/tl2.c.orig $(TL2_HOME)/tl2.c
 	patch -d $(TL2_HOME) -u -i $(shell pwd)/src/tl2.patch
@@ -47,10 +46,6 @@ stamp-patch:
 	cp $(STAMP_HOME)/common/Makefile.stm.orig $(STAMP_HOME)/common/Makefile.stm
 	sed -i -e 's|^LIBS.*|LIBS     += -ltl2 -leventlog|' $(STAMP_HOME)/common/Makefile.stm
 	sed -i -e 's|^LDFLAGS.*|LDFLAGS  += -L$$(STM) -L$(shell pwd)|' $(STAMP_HOME)/common/Makefile.stm
-	mv -n $(STAMP_HOME)/common/Makefile.common $(STAMP_HOME)/common/Makefile.common.orig
-	cp $(STAMP_HOME)/common/Makefile.common.orig $(STAMP_HOME)/common/Makefile.common
-	sed -i -e 's|CC|CPP|' $(STAMP_HOME)/common/Makefile.common
-	sed -i -e 's|CFLAGS|CPPFLAGS|' $(STAMP_HOME)/common/Makefile.common
 
 stamp-compile:
 	for program in $(STAMP_PROGRAMS); do \
@@ -60,7 +55,6 @@ stamp-compile:
 stamp-restore:
 	mv $(STAMP_HOME)/common/Defines.common.mk.orig $(STAMP_HOME)/common/Defines.common.mk
 	mv $(STAMP_HOME)/common/Makefile.stm.orig $(STAMP_HOME)/common/Makefile.stm
-	mv $(STAMP_HOME)/common/Makefile.common.orig $(STAMP_HOME)/common/Makefile.common
 
 clean:
 	rm -rf *.a *.o

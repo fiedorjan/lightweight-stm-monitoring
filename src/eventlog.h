@@ -7,18 +7,16 @@
  * @file      eventlog.h
  * @author    Jan Fiedor (fiedorjan@centrum.cz)
  * @date      Created 2014-06-13
- * @date      Last Update 2014-06-13
- * @version   0.1
+ * @date      Last Update 2014-06-16
+ * @version   0.2
  */
 
 #ifndef __EVENTLOG_H__
   #define __EVENTLOG_H__
 
-#include <vector>
-
 #define EVENTLOG_THREADS 8
 
-#define LOG_EVENT(type, tid, file, line) g_eventLog[tid].events.push_back(Event(type, file, line))
+#define LOG_EVENT(type, tid, file, line) logEvent(tid, type, file, line)
 
 typedef enum EventType_e
 {
@@ -29,23 +27,16 @@ typedef enum EventType_e
   TX_WRITE
 } EventType;
 
-typedef struct Event_s
-{
-  EventType type;
-  const char* file;
-  unsigned long line;
+#ifdef __cplusplus
+extern "C" {
+#endif
 
-  Event_s(EventType t, const char* f, unsigned long l) : type(t), file(f), line(l) {}
-} Event;
-
-typedef struct EventLog_s
-{
-  std::vector< Event > events;
-} EventLog;
-
-extern EventLog g_eventLog[EVENTLOG_THREADS];
-
+void logEvent(long tid, EventType type, const char* file, unsigned long line);
 void printStatistics();
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif /* __EVENTLOG_H__ */
 
