@@ -85,19 +85,31 @@
 
 typedef volatile intptr_t               vintp;
 
-#define STM_READ(var)                   TxLoad(STM_SELF, (vintp*)(void*)&(var))
-#define STM_READ_F(var)                 IP2F(TxLoad(STM_SELF, \
+inline intptr_t TxReadWrapper(Thread* Self, volatile intptr_t* Addr)
+{
+  LOG_EVENT(TX_READ, *(long*)STM_SELF, __FILE__, __LINE__);
+  return TxLoad(Self, Addr);
+}
+
+inline void TxWriteWrapper(Thread* Self, volatile intptr_t* addr, intptr_t valu)
+{
+  LOG_EVENT(TX_WRITE, *(long*)STM_SELF, __FILE__, __LINE__);
+  TxStore(Self, addr, valu);
+}
+
+#define STM_READ(var)                   TxReadWrapper(STM_SELF, (vintp*)(void*)&(var))
+#define STM_READ_F(var)                 IP2F(TxReadWrapper(STM_SELF, \
                                                     (vintp*)FP2IPP(&(var))))
-#define STM_READ_P(var)                 IP2VP(TxLoad(STM_SELF, \
+#define STM_READ_P(var)                 IP2VP(TxReadWrapper(STM_SELF, \
                                                      (vintp*)(void*)&(var)))
 
-#define STM_WRITE(var, val)             TxStore(STM_SELF, \
+#define STM_WRITE(var, val)             TxWriteWrapper(STM_SELF, \
                                                 (vintp*)(void*)&(var), \
                                                 (intptr_t)(val))
-#define STM_WRITE_F(var, val)           TxStore(STM_SELF, \
+#define STM_WRITE_F(var, val)           TxWriteWrapper(STM_SELF, \
                                                 (vintp*)FP2IPP(&(var)), \
                                                 F2IP(val))
-#define STM_WRITE_P(var, val)           TxStore(STM_SELF, \
+#define STM_WRITE_P(var, val)           TxWriteWrapper(STM_SELF, \
                                                 (vintp*)(void*)&(var), \
                                                 VP2IP(val))
 
