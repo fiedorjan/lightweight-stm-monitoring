@@ -7,7 +7,7 @@
  * @author    Jan Fiedor (fiedorjan@centrum.cz)
  * @date      Created 2014-06-19
  * @date      Last Update 2014-06-19
- * @version   0.1
+ * @version   0.2
  */
 
 #ifndef __LWM_H__
@@ -17,7 +17,7 @@
 
 #if LWM_TYPE == LWM_FAST_PER_TX_TYPE_ABORTS
   #define MAXIMUM_THREADS 8
-  #define MAXIMUM_TRANSACTIONS 16
+  #define MAXIMUM_TRANSACTIONS 32
 
   typedef unsigned long tx_op_counter_t;
 
@@ -47,6 +47,10 @@
       TxStart(STM_SELF, &STM_JMPBUF, &STM_RO_FLAG); \
       ++g_stats[*(long*)STM_SELF][__COUNTER__].starts; \
     } while (0) /* enforce comma */
+
+  #define STM_END() \
+    TxCommit(STM_SELF); \
+    ++g_stats[*(long*)STM_SELF][__COUNTER__ - 1].commits
 
   #define STM_SHUTDOWN() \
     TxShutdown(); \
