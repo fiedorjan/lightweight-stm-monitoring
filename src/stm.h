@@ -95,6 +95,7 @@ typedef volatile intptr_t               vintp;
 #define STM_LOCAL_WRITE_F(var, val)     ({var = val; var;})
 #define STM_LOCAL_WRITE_P(var, val)     ({var = val; var;})
 
+#include "lwm.h"
 
 #endif /* STM_H */
 
