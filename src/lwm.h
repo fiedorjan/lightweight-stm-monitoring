@@ -6,28 +6,24 @@
  * @file      lwm.h
  * @author    Jan Fiedor (fiedorjan@centrum.cz)
  * @date      Created 2014-06-19
- * @date      Last Update 2014-06-19
- * @version   0.2
+ * @date      Last Update 2014-06-20
+ * @version   0.2.1
  */
 
 #ifndef __LWM_H__
   #define __LWM_H__
 
 #include "config.h"
+#include "defs.h"
 
 #if LWM_TYPE == LWM_FAST_PER_TX_TYPE_ABORTS
-  #define MAXIMUM_THREADS 8
-  #define MAXIMUM_TRANSACTIONS 32
-
-  typedef unsigned long tx_op_counter_t;
-
   typedef struct TxInfo_s
   {
     tx_op_counter_t starts;
     tx_op_counter_t commits;
   } TxInfo;
 
-  extern TxInfo g_stats[MAXIMUM_THREADS][MAXIMUM_TRANSACTIONS];
+  extern TxInfo g_stats[LWM_MAX_THREADS][LWM_MAX_TX_TYPES];
 
   #ifdef __cplusplus
     extern "C" {

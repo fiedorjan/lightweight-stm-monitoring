@@ -1,13 +1,13 @@
 /**
- * @brief Contains configuration of lightweight monitoring.
+ * @brief Contains configuration influencing the compilation of the library.
  *
- * A file containing configuration of lightweight monitoring.
+ * A file containing configuration influencing the compilation of the library.
  *
  * @file      config.h
  * @author    Jan Fiedor (fiedorjan@centrum.cz)
  * @date      Created 2014-06-19
- * @date      Last Update 2014-06-19
- * @version   0.1
+ * @date      Last Update 2014-06-20
+ * @version   0.1.1
  */
 
 #ifndef __CONFIG_H__
@@ -16,6 +16,9 @@
 #define LWM_FAST_PER_TX_TYPE_ABORTS 1
 
 #define LWM_TYPE LWM_FAST_PER_TX_TYPE_ABORTS
+
+#define LWM_MAX_THREADS 8
+#define LWM_MAX_TX_TYPES 32
 
 #endif /* __CONFIG_H__ */
 

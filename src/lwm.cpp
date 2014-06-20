@@ -6,8 +6,8 @@
  * @file      lwm.cpp
  * @author    Jan Fiedor (fiedorjan@centrum.cz)
  * @date      Created 2014-06-19
- * @date      Last Update 2014-06-19
- * @version   0.2
+ * @date      Last Update 2014-06-20
+ * @version   0.2.1
  */
 
 #include "lwm.h"
@@ -15,7 +15,7 @@
 #include <iostream>
 #include <vector>
 
-TxInfo g_stats[MAXIMUM_THREADS][MAXIMUM_TRANSACTIONS];
+TxInfo g_stats[LWM_MAX_THREADS][LWM_MAX_TX_TYPES];
 
 typedef struct TxStats_s
 {
@@ -50,11 +50,11 @@ void printStats()
   tx_op_counter_t commits = 0;
   tx_op_counter_t aborts = 0;
 
-  TxStats stats[MAXIMUM_TRANSACTIONS];
+  TxStats stats[LWM_MAX_TX_TYPES];
 
-  for (int txid = 0; txid < MAXIMUM_TRANSACTIONS; txid++)
+  for (int txid = 0; txid < LWM_MAX_TX_TYPES; txid++)
   {
-    for (int tid = 0; tid < MAXIMUM_THREADS; tid++)
+    for (int tid = 0; tid < LWM_MAX_THREADS; tid++)
     {
       starts += g_stats[tid][txid].starts;
       commits += g_stats[tid][txid].commits;
@@ -76,7 +76,7 @@ void printStats()
   std::cout << "  Aborts: " << aborts << "\n";
   std::cout << "Per-Transaction-Type Statistics\n";
 
-  for (int txid = 0; txid < MAXIMUM_TRANSACTIONS; txid++)
+  for (int txid = 0; txid < LWM_MAX_TX_TYPES; txid++)
   {
     if (stats[txid].started > 0)
     { // Filter out non-existent transactions for which we allocated space
