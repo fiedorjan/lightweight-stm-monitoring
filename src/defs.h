@@ -7,13 +7,19 @@
  * @author    Jan Fiedor (fiedorjan@centrum.cz)
  * @date      Created 2014-06-20
  * @date      Last Update 2014-06-20
- * @version   0.1
+ * @version   0.1.1
  */
 
 #ifndef __DEFS_H__
   #define __DEFS_H__
 
 typedef unsigned long tx_op_counter_t;
+
+#ifdef __cplusplus
+  #define API_FUNCTION extern "C"
+#else
+  #define API_FUNCTION
+#endif
 
 #endif /* __DEFS_H__ */
 

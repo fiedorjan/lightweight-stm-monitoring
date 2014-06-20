@@ -7,7 +7,7 @@
  * @author    Jan Fiedor (fiedorjan@centrum.cz)
  * @date      Created 2014-06-19
  * @date      Last Update 2014-06-20
- * @version   0.2.1
+ * @version   0.2.2
  */
 
 #ifndef __LWM_H__
@@ -25,15 +25,7 @@
 
   extern TxInfo g_stats[LWM_MAX_THREADS][LWM_MAX_TX_TYPES];
 
-  #ifdef __cplusplus
-    extern "C" {
-  #endif
-
-  void printStats();
-
-  #ifdef __cplusplus
-    }
-  #endif
+  API_FUNCTION void printStats();
 
   #define STM_BEGIN(isReadOnly) \
     do { \
