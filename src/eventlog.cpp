@@ -7,8 +7,8 @@
  * @file      eventlog.cpp
  * @author    Jan Fiedor (fiedorjan@centrum.cz)
  * @date      Created 2014-06-13
- * @date      Last Update 2014-06-16
- * @version   0.4
+ * @date      Last Update 2014-06-23
+ * @version   0.5
  */
 
 #include "eventlog.h"
@@ -21,21 +21,15 @@
 #include <string>
 #include <vector>
 
-typedef struct Event_s
-{
-  EventType type;
-  const char* file;
-  unsigned long line;
+#include "config.h"
 
-  Event_s(EventType t, const char* f, unsigned long l) : type(t), file(f), line(l) {}
-} Event;
+#if LWM_TYPE == LWM_EVT_LOG_PER_TX_TYPE_ABORTS
+  typedef EventType Event;
+#endif
 
-typedef struct EventLog_s
-{
-  std::vector< Event > events;
-} EventLog;
+typedef std::vector< Event > EventLog;
 
-EventLog g_eventLog[EVENTLOG_THREADS];
+EventLog g_eventLog[LWM_MAX_THREADS][LWM_MAX_TX_TYPES];
 
 typedef struct TxInfo_s
 {
@@ -46,11 +40,14 @@ typedef struct TxInfo_s
   unsigned long writes;
 } TxInfo;
 
-void logEvent(long tid, EventType type, const char* file, unsigned long line)
-{
-  g_eventLog[tid].events.push_back(Event(type, file, line));
-}
+#if LWM_TYPE == LWM_EVT_LOG_PER_TX_TYPE_ABORTS
+  void logEvent(thread_id_t tid, EventType type, tx_type_t txid)
+  {
+    g_eventLog[tid][txid].push_back(type);
+  }
+#endif
 
+#if FALSE
 void printStatistics()
 {
   TxInfo* txInfo = NULL;
@@ -61,7 +58,7 @@ void printStatistics()
   unsigned long txWrites = 0;
   std::map< std::string, TxInfo > txInfoTable;
 
-  for (int i = 0; i < EVENTLOG_THREADS; i++)
+  for (int i = 0; i < LWM_MAX_THREADS; i++)
   {
     for (std::vector< Event >::iterator it = g_eventLog[i].events.begin();
       it != g_eventLog[i].events.end(); it++)
@@ -119,5 +116,6 @@ void printStatistics()
       << "    Transactional writes: " << it->second.writes << "\n";
   }
 }
+#endif
 
 /** End of file eventlog.cpp **/

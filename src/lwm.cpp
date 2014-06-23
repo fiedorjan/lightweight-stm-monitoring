@@ -7,7 +7,7 @@
  * @author    Jan Fiedor (fiedorjan@centrum.cz)
  * @date      Created 2014-06-19
  * @date      Last Update 2014-06-20
- * @version   0.2.1
+ * @version   0.2.2
  */
 
 #include "lwm.h"
@@ -15,6 +15,7 @@
 #include <iostream>
 #include <vector>
 
+#if LWM_TYPE == LWM_FAST_PER_TX_TYPE_ABORTS
 TxInfo g_stats[LWM_MAX_THREADS][LWM_MAX_TX_TYPES];
 
 typedef struct TxStats_s
@@ -90,5 +91,6 @@ void printStats()
     }
   }
 }
+#endif
 
 /** End of file lwm.cpp **/

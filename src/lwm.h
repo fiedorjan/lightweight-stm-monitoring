@@ -6,8 +6,8 @@
  * @file      lwm.h
  * @author    Jan Fiedor (fiedorjan@centrum.cz)
  * @date      Created 2014-06-19
- * @date      Last Update 2014-06-20
- * @version   0.2.2
+ * @date      Last Update 2014-06-23
+ * @version   0.3
  */
 
 #ifndef __LWM_H__
@@ -43,6 +43,21 @@
   #define STM_SHUTDOWN() \
     TxShutdown(); \
     printStats()
+#elif LWM_TYPE == LWM_EVT_LOG_PER_TX_TYPE_ABORTS
+  #include "eventlog.h"
+
+  #define STM_BEGIN(isReadOnly) \
+    do { \
+      STM_JMPBUF_T STM_JMPBUF; \
+      int STM_RO_FLAG = isReadOnly; \
+      sigsetjmp(STM_JMPBUF, 1); \
+      TxStart(STM_SELF, &STM_JMPBUF, &STM_RO_FLAG); \
+      LOG_EVENT(*(long*)STM_SELF, TX_START, __COUNTER__); \
+    } while (0) /* enforce comma */
+
+  #define STM_END() \
+    TxCommit(STM_SELF); \
+    LOG_EVENT(*(long*)STM_SELF, TX_COMMIT, __COUNTER__ - 1)
 #endif
 
 #endif /* __LWM_H__ */

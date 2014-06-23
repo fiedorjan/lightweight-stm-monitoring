@@ -7,12 +7,14 @@
  * @author    Jan Fiedor (fiedorjan@centrum.cz)
  * @date      Created 2014-06-20
  * @date      Last Update 2014-06-20
- * @version   0.1.1
+ * @version   0.1.2
  */
 
 #ifndef __DEFS_H__
   #define __DEFS_H__
 
+typedef long thread_id_t;
+typedef unsigned int tx_type_t;
 typedef unsigned long tx_op_counter_t;
 
 #ifdef __cplusplus
