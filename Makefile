@@ -5,7 +5,7 @@
 # Author:    Jan Fiedor (fiedorjan@centrum.cz)
 # Date:      Created 2014-06-12
 # Date:      Last Update 2014-06-23
-# Version:   0.4.2
+# Version:   0.4.3
 #
 
 # Settings
@@ -35,7 +35,8 @@ lwm: lwm-lib tl2-lwm stamp-lwm
 lwm-lib:
 	$(CPP) $(LWM_CPPFLAGS) -c src/eventlog.cpp
 	$(CPP) $(LWM_CPPFLAGS) -c src/lwm.cpp
-	ar cr lib$(LWM_LIB_NAME).a eventlog.o lwm.o
+	$(CPP) $(LWM_CPPFLAGS) -c src/stats.cpp
+	ar cr lib$(LWM_LIB_NAME).a eventlog.o lwm.o stats.o
 
 # TL2 library with no modifications
 tl2: tl2-compile
