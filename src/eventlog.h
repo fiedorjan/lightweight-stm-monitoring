@@ -8,7 +8,7 @@
  * @author    Jan Fiedor (fiedorjan@centrum.cz)
  * @date      Created 2014-06-13
  * @date      Last Update 2014-06-23
- * @version   0.3.1
+ * @version   0.3.2
  */
 
 #ifndef __EVENTLOG_H__
@@ -26,7 +26,7 @@ typedef enum EventType_e
   TX_WRITE
 } EventType;
 
-#if LWM_TYPE == LWM_EVT_LOG_PER_TX_TYPE_ABORTS
+#if LWM_TYPE == LWM_EVT_LOG_PER_TX_TYPE_ABORTS || LWM_TYPE == LWM_EVT_LOG_PER_THREAD_ABORTS
   API_FUNCTION void logEvent(thread_id_t tid, EventType type, tx_type_t txid);
 
   #define LOG_EVENT(tid, type, txid) logEvent(tid, type, txid)

@@ -7,7 +7,7 @@
  * @author    Jan Fiedor (fiedorjan@centrum.cz)
  * @date      Created 2014-06-19
  * @date      Last Update 2014-06-23
- * @version   0.3.1
+ * @version   0.3.2
  */
 
 #ifndef __LWM_H__
@@ -37,7 +37,7 @@
   #define STM_END() \
     TxCommit(STM_SELF); \
     ++g_stats[*(long*)STM_SELF][__COUNTER__ - 1].commits
-#elif LWM_TYPE == LWM_EVT_LOG_PER_TX_TYPE_ABORTS
+#elif LWM_TYPE == LWM_EVT_LOG_PER_TX_TYPE_ABORTS || LWM_TYPE == LWM_EVT_LOG_PER_THREAD_ABORTS
   #include "eventlog.h"
 
   #define STM_BEGIN(isReadOnly) \
