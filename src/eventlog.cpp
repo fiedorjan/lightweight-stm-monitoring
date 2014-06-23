@@ -8,7 +8,7 @@
  * @author    Jan Fiedor (fiedorjan@centrum.cz)
  * @date      Created 2014-06-13
  * @date      Last Update 2014-06-23
- * @version   0.7
+ * @version   0.7.1
  */
 
 #include "eventlog.h"
@@ -27,9 +27,24 @@
   {
     EventType type; //!< Event type.
     tx_type_t txid; //!< Transaction type identifier.
+#if LWM_COLLECT_TIMESTAMPS == 1
+    timestamp_t ts; //!< Timestamp of the event.
 
+    Event_s(EventType evt, tx_type_t txt, timestamp_t ets) : type(evt),
+      txid(txt), ts(ets) {}
+#else
     Event_s(EventType evt, tx_type_t txt) : type(evt), txid(txt) {}
+#endif
   } Event;
+
+#if LWM_COLLECT_TIMESTAMPS == 1
+  #define TIMESTAMP_VAR , ts
+  #define TIMESTAMP_PARAM , timestamp_t ts
+#else
+  #define TIMESTAMP_VAR
+  #define TIMESTAMP_PARAM
+#endif
+
 #else
   typedef EventType Event;
 #endif
@@ -43,12 +58,12 @@ typedef std::vector< Event > EventLog;
 #endif
 
 #if LWM_TYPE == LWM_EVT_LOG_PER_TX_TYPE_ABORTS || LWM_TYPE == LWM_EVT_LOG_PER_THREAD_ABORTS
-void logEvent(thread_id_t tid, EventType type, tx_type_t txid)
+void logEvent(thread_id_t tid, EventType type, tx_type_t txid TIMESTAMP_PARAM)
 {
 #if LWM_TYPE == LWM_EVT_LOG_PER_TX_TYPE_ABORTS
   g_eventLog[tid][txid].push_back(type);
 #elif LWM_TYPE == LWM_EVT_LOG_PER_THREAD_ABORTS
-  g_eventLog[tid].push_back(Event(type, txid));
+  g_eventLog[tid].push_back(Event(type, txid TIMESTAMP_VAR));
 #endif
 }
 
