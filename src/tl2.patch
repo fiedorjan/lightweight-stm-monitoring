@@ -1,13 +1,14 @@
 --- tl2.c.orig	2008-09-09 00:41:02.000000000 +0200
-+++ tl2.c	2014-06-16 13:17:22.280314922 +0200
-@@ -96,7 +96,9 @@
-     NADA
- } ManifestContants;
++++ tl2.c	2014-06-23 19:12:44.820990756 +0200
+@@ -116,7 +116,11 @@
+ #  define PROF_STM_WRITELOCAL_END()     /* nothing */
+ #  define PROF_STM_SUCCESS()            /* nothing */
  
--#  define PROF_STM_ABORT_BEGIN()        /* nothing */
 +#include "eventlog.h"
-+
-+#  define PROF_STM_ABORT_BEGIN()        LOG_EVENT(TX_ABORT, Self->UniqID, __FILE__, __LINE__)
- #  define PROF_STM_ABORT_END()          /* nothing */
- #  define PROF_STM_COMMIT_BEGIN()       /* nothing */
- #  define PROF_STM_COMMIT_END()         /* nothing */
+ 
++#if LWM_TYPE == LWM_EVT_LOG_PER_THREAD_ABORTS && LWM_TRACK_ABORTS == 1
++  #define PROF_STM_ABORT_BEGIN() LOG_EVENT(Self->UniqID, TX_ABORT, __COUNTER__)
++#endif
+ 
+ typedef int            BitMap;
+ typedef uintptr_t      vwLock;  /* (Version,LOCKBIT) */

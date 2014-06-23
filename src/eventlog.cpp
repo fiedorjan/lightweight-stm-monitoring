@@ -8,7 +8,7 @@
  * @author    Jan Fiedor (fiedorjan@centrum.cz)
  * @date      Created 2014-06-13
  * @date      Last Update 2014-06-23
- * @version   0.7.1
+ * @version   0.8
  */
 
 #include "eventlog.h"
@@ -114,7 +114,14 @@ void printStats()
     { // Initialise statistics for this thread
       stats.txs[txid].ptstarts.push_back(0);
       stats.txs[txid].ptcommits.push_back(0);
+#if LWM_TRACK_ABORTS == 1
+      stats.txs[txid].ptaborts.push_back(0);
+#endif
     }
+
+#if LWM_TRACK_ABORTS == 1
+    tx_type_t txid = -1;
+#endif
 
     for (EventLog::iterator it = g_eventLog[tid].begin();
       it != g_eventLog[tid].end(); ++it)
@@ -122,6 +129,9 @@ void printStats()
       switch (it->type)
       { // Distinguish between different types of TM operations
         case TX_START:
+#if LWM_TRACK_ABORTS == 1
+          txid = it->txid;
+#endif
           ++stats.starts;
           ++stats.txs[it->txid].starts;
           ++stats.txs[it->txid].ptstarts[tid];
@@ -131,18 +141,30 @@ void printStats()
           ++stats.txs[it->txid].commits;
           ++stats.txs[it->txid].ptcommits[tid];
           break;
+#if LWM_TRACK_ABORTS == 1
+        case TX_ABORT:
+          assert(txid != -1);
+          ++stats.aborts;
+          ++stats.txs[txid].aborts;
+          ++stats.txs[txid].ptaborts[tid];
+          txid = -1;
+          break;
+#endif
         default:
           assert(false);
           break;
       }
     }
 
+#if LWM_TRACK_ABORTS != 1
     for (int txid = 0; txid < LWM_MAX_TX_TYPES; txid++)
-    { // Initialise statistics for this thread
+    { // Compute the statistics for aborts from starts and commits
       stats.aborts = stats.starts - stats.commits;
       stats.txs[txid].aborts = (stats.txs[txid].starts - stats.txs[txid].commits);
       stats.txs[txid].ptaborts.push_back(stats.txs[txid].ptstarts[tid] - stats.txs[txid].ptcommits[tid]);
     }
+#endif
+
 #endif
   }
 
