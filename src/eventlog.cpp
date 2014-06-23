@@ -8,20 +8,17 @@
  * @author    Jan Fiedor (fiedorjan@centrum.cz)
  * @date      Created 2014-06-13
  * @date      Last Update 2014-06-23
- * @version   0.5.0.1
+ * @version   0.6
  */
 
 #include "eventlog.h"
 
 #include <assert.h>
-#include <stdio.h>
 
-#include <iostream>
-#include <map>
-#include <string>
 #include <vector>
 
 #include "config.h"
+#include "stats.h"
 
 #if LWM_TYPE == LWM_EVT_LOG_PER_TX_TYPE_ABORTS
   typedef EventType Event;
@@ -33,90 +30,57 @@ typedef std::vector< Event > EventLog;
 
 EventLog g_eventLog[LWM_MAX_THREADS][LWM_MAX_TX_TYPES];
 
-typedef struct TxInfo_s
-{
-  unsigned long started;
-  unsigned long committed;
-  unsigned long aborted;
-  unsigned long reads;
-  unsigned long writes;
-} TxInfo;
-
 #if LWM_TYPE == LWM_EVT_LOG_PER_TX_TYPE_ABORTS
-  void logEvent(thread_id_t tid, EventType type, tx_type_t txid)
-  {
-    g_eventLog[tid][txid].push_back(type);
-  }
-#endif
-
-#if FALSE
-void printStatistics()
+void logEvent(thread_id_t tid, EventType type, tx_type_t txid)
 {
-  TxInfo* txInfo = NULL;
-  unsigned long txStarted = 0;
-  unsigned long txCommitted = 0;
-  unsigned long txAborted = 0;
-  unsigned long txReads = 0;
-  unsigned long txWrites = 0;
-  std::map< std::string, TxInfo > txInfoTable;
+  g_eventLog[tid][txid].push_back(type);
+}
 
-  for (int i = 0; i < LWM_MAX_THREADS; i++)
+void printStats()
+{
+  Stats stats;
+
+  for (int txid = 0; txid < LWM_MAX_TX_TYPES; txid++)
   {
-    for (std::vector< Event >::iterator it = g_eventLog[i].events.begin();
-      it != g_eventLog[i].events.end(); it++)
+    for (int tid = 0; tid < LWM_MAX_THREADS; tid++)
     {
-      switch (it->type)
-      {
-        case TX_START:
-          txInfo = &txInfoTable[std::string(it->file) + ":" + std::to_string(it->line)];
-          ++txStarted;
-          ++txInfo->started;
-          break;
-        case TX_COMMIT:
-          assert(txInfo != NULL);
-          ++txCommitted;
-          ++txInfo->committed;
-          break;
-        case TX_ABORT:
-          assert(txInfo != NULL);
-          ++txAborted;
-          ++txInfo->aborted;
-          break;
-        case TX_READ:
-          assert(txInfo != NULL);
-          ++txReads;
-          ++txInfo->reads;
-          break;
-        case TX_WRITE:
-          assert(txInfo != NULL);
-          ++txWrites;
-          ++txInfo->writes;
-          break;
-        default:
-          assert(false);
-          break;
+      tx_op_counter_t starts = 0;
+      tx_op_counter_t commits = 0;
+      tx_op_counter_t aborts = 0;
+
+      for (EventLog::iterator it = g_eventLog[tid][txid].begin();
+        it != g_eventLog[tid][txid].end(); ++it)
+      { // Count the TM operations
+        switch (*it)
+        { // Distinguish between different types of TM operations
+          case TX_START:
+            ++starts;
+            break;
+          case TX_COMMIT:
+            ++commits;
+            break;
+          default:
+            assert(false);
+            break;
+        }
       }
+
+      stats.starts += starts;
+      stats.commits += commits;
+      stats.aborts += starts - commits;
+
+      stats.txs[txid].starts += starts;
+      stats.txs[txid].commits += commits;
+      stats.txs[txid].aborts += starts - commits;
+
+      stats.txs[txid].ptstarts.push_back(starts);
+      stats.txs[txid].ptcommits.push_back(commits);
+      stats.txs[txid].ptaborts.push_back(starts - commits);
     }
   }
 
-  std::cout << "Global Statistics\n";
-  std::cout << "  Transactions started: " << txStarted << "\n";
-  std::cout << "  Transactions committed: " << txCommitted << "\n";
-  std::cout << "  Transactions aborted: " << txAborted << "\n";
-  std::cout << "  Transactional reads: " << txReads << "\n";
-  std::cout << "  Transactional writes: " << txWrites << "\n";
-  std::cout << "Per-Transaction-Type Statistics\n";
-
-  for (std::map< std::string, TxInfo >::iterator it = txInfoTable.begin();
-    it != txInfoTable.end(); it++)
-  {
-    std::cout << "  Transaction " << it->first << "\n"
-      << "    Transactions started: " << it->second.started << "\n"
-      << "    Transactions committed: " << it->second.committed << "\n"
-      << "    Transactions aborted: " << it->second.aborted << "\n"
-      << "    Transactional reads: " << it->second.reads << "\n"
-      << "    Transactional writes: " << it->second.writes << "\n";
-  }
+  printGlobalStats(stats);
+  printPerTxTypeStats(stats);
 }
 #endif
 

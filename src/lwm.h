@@ -7,7 +7,7 @@
  * @author    Jan Fiedor (fiedorjan@centrum.cz)
  * @date      Created 2014-06-19
  * @date      Last Update 2014-06-23
- * @version   0.3
+ * @version   0.3.1
  */
 
 #ifndef __LWM_H__
@@ -25,8 +25,6 @@
 
   extern TxInfo g_stats[LWM_MAX_THREADS][LWM_MAX_TX_TYPES];
 
-  API_FUNCTION void printStats();
-
   #define STM_BEGIN(isReadOnly) \
     do { \
       STM_JMPBUF_T STM_JMPBUF; \
@@ -39,10 +37,6 @@
   #define STM_END() \
     TxCommit(STM_SELF); \
     ++g_stats[*(long*)STM_SELF][__COUNTER__ - 1].commits
-
-  #define STM_SHUTDOWN() \
-    TxShutdown(); \
-    printStats()
 #elif LWM_TYPE == LWM_EVT_LOG_PER_TX_TYPE_ABORTS
   #include "eventlog.h"
 
@@ -59,6 +53,12 @@
     TxCommit(STM_SELF); \
     LOG_EVENT(*(long*)STM_SELF, TX_COMMIT, __COUNTER__ - 1)
 #endif
+
+API_FUNCTION void printStats();
+
+#define STM_SHUTDOWN() \
+  TxShutdown(); \
+  printStats()
 
 #endif /* __LWM_H__ */
 

@@ -8,13 +8,14 @@
  * @author    Jan Fiedor (fiedorjan@centrum.cz)
  * @date      Created 2014-06-13
  * @date      Last Update 2014-06-23
- * @version   0.3
+ * @version   0.3.1
  */
 
 #ifndef __EVENTLOG_H__
   #define __EVENTLOG_H__
 
 #include "defs.h"
+#include "lwm.h"
 
 typedef enum EventType_e
 {
