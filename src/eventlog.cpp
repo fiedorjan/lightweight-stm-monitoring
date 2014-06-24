@@ -8,7 +8,7 @@
  * @author    Jan Fiedor (fiedorjan@centrum.cz)
  * @date      Created 2014-06-13
  * @date      Last Update 2014-06-24
- * @version   0.8.3
+ * @version   0.8.4
  */
 
 #include "eventlog.h"
@@ -121,9 +121,15 @@ void printStats()
 #if LWM_TRACK_ABORTS == 1
       stats.txs[txid].ptaborts.push_back(0);
 #endif
+#if LWM_TRACK_READS == 1
+      stats.txs[txid].ptreads.push_back(0);
+#endif
+#if LWM_TRACK_WRITES == 1
+      stats.txs[txid].ptwrites.push_back(0);
+#endif
     }
 
-#if LWM_TRACK_ABORTS == 1
+#if LWM_TRACK_ABORTS == 1 || LWM_TRACK_READS == 1 || LWM_TRACK_WRITES == 1
     tx_type_t txid = -1;
 #endif
 
@@ -133,7 +139,7 @@ void printStats()
       switch (it->type)
       { // Distinguish between different types of TM operations
         case TX_START:
-#if LWM_TRACK_ABORTS == 1
+#if LWM_TRACK_ABORTS == 1 || LWM_TRACK_READS == 1 || LWM_TRACK_WRITES == 1
           txid = it->txid;
 #endif
           ++stats.starts;
@@ -157,11 +163,17 @@ void printStats()
 #if LWM_TRACK_READS == 1
         case TX_READ:
           assert(txid != -1);
+          ++stats.reads;
+          ++stats.txs[txid].reads;
+          ++stats.txs[txid].ptreads[tid];
           break;
 #endif
 #if LWM_TRACK_WRITES == 1
         case TX_WRITE:
           assert(txid != -1);
+          ++stats.writes;
+          ++stats.txs[txid].writes;
+          ++stats.txs[txid].ptwrites[tid];
           break;
 #endif
         default:
