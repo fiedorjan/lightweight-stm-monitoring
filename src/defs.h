@@ -6,8 +6,8 @@
  * @file      defs.h
  * @author    Jan Fiedor (fiedorjan@centrum.cz)
  * @date      Created 2014-06-20
- * @date      Last Update 2014-06-23
- * @version   0.1.3
+ * @date      Last Update 2014-06-24
+ * @version   0.1.4
  */
 
 #ifndef __DEFS_H__
@@ -23,6 +23,8 @@ typedef unsigned long long timestamp_t;
 #else
   #define API_FUNCTION
 #endif
+
+API_FUNCTION void printStats();
 
 #endif /* __DEFS_H__ */
 

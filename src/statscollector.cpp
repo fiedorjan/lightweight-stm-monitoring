@@ -7,12 +7,13 @@
  * @author    Jan Fiedor (fiedorjan@centrum.cz)
  * @date      Created 2014-06-19
  * @date      Last Update 2014-06-24
- * @version   0.3.1
+ * @version   0.3.2
  */
 
 #include "statscollector.h"
 
-#include "lwm.h"
+#include "defs.h"
+#include "config.h"
 #include "statsprinter.h"
 
 #if LWM_TYPE == LWM_FAST_PER_TX_TYPE_ABORTS

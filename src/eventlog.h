@@ -7,8 +7,8 @@
  * @file      eventlog.h
  * @author    Jan Fiedor (fiedorjan@centrum.cz)
  * @date      Created 2014-06-13
- * @date      Last Update 2014-06-23
- * @version   0.3.3
+ * @date      Last Update 2014-06-24
+ * @version   0.3.4
  */
 
 #ifndef __EVENTLOG_H__
@@ -16,7 +16,6 @@
 
 #include "config.h"
 #include "defs.h"
-#include "lwm.h"
 
 #if LWM_TYPE == LWM_EVT_LOG_PER_THREAD_ABORTS && LWM_COLLECT_TIMESTAMPS == 1
   #include "rdtsc.h"

@@ -7,7 +7,7 @@
  * @author    Jan Fiedor (fiedorjan@centrum.cz)
  * @date      Created 2014-06-19
  * @date      Last Update 2014-06-24
- * @version   0.3.4
+ * @version   0.3.5
  */
 
 #ifndef __LWM_H__
@@ -58,8 +58,6 @@
 #endif
 
 #endif
-
-API_FUNCTION void printStats();
 
 #define STM_SHUTDOWN() \
   TxShutdown(); \
