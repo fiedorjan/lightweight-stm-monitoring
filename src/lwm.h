@@ -6,8 +6,8 @@
  * @file      lwm.h
  * @author    Jan Fiedor (fiedorjan@centrum.cz)
  * @date      Created 2014-06-19
- * @date      Last Update 2014-06-23
- * @version   0.3.2
+ * @date      Last Update 2014-06-24
+ * @version   0.3.3
  */
 
 #ifndef __LWM_H__
@@ -52,6 +52,17 @@
   #define STM_END() \
     TxCommit(STM_SELF); \
     LOG_EVENT(*(long*)STM_SELF, TX_COMMIT, __COUNTER__ - 1)
+
+#if LWM_TYPE == LWM_EVT_LOG_PER_THREAD_ABORTS
+  #if LWM_TRACK_READS == 1
+    // TODO
+  #endif
+
+  #if LWM_TRACK_WRITES == 1
+    // TODO
+  #endif
+#endif
+
 #endif
 
 API_FUNCTION void printStats();

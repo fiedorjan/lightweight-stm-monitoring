@@ -6,8 +6,8 @@
  * @file      config.h
  * @author    Jan Fiedor (fiedorjan@centrum.cz)
  * @date      Created 2014-06-19
- * @date      Last Update 2014-06-23
- * @version   0.2.2
+ * @date      Last Update 2014-06-24
+ * @version   0.2.3
  */
 
 #ifndef __CONFIG_H__
@@ -23,6 +23,10 @@
 #define LWM_COLLECT_TIMESTAMPS 1
 // Currently only valid if LWM_TYPE is LWM_EVT_LOG_PER_THREAD_ABORTS
 #define LWM_TRACK_ABORTS 1
+// Currently only valid if LWM_TYPE is LWM_EVT_LOG_PER_THREAD_ABORTS
+#define LWM_TRACK_READS 1
+// Currently only valid if LWM_TYPE is LWM_EVT_LOG_PER_THREAD_ABORTS
+#define LWM_TRACK_WRITES 1
 
 #define LWM_MAX_THREADS 8
 #define LWM_MAX_TX_TYPES 32
