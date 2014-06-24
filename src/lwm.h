@@ -7,7 +7,7 @@
  * @author    Jan Fiedor (fiedorjan@centrum.cz)
  * @date      Created 2014-06-19
  * @date      Last Update 2014-06-24
- * @version   0.3.5
+ * @version   0.4
  */
 
 #ifndef __LWM_H__
@@ -47,13 +47,19 @@
     TxCommit(STM_SELF); \
     LOG_EVENT(*(long*)STM_SELF, TX_COMMIT, __COUNTER__ - 1)
 
-#if LWM_TYPE == LWM_EVT_LOG_PER_THREAD_ABORTS
+#if LWM_TYPE == LWM_EVT_LOG_PER_THREAD_ABORTS && (LWM_TRACK_READS == 1 || LWM_TRACK_WRITES == 1)
+  #include "wrappers.h"
+
   #if LWM_TRACK_READS == 1
-    // TODO
+    #define STM_READ(var) TxReadWrapper(STM_SELF, (vintp*)(void*)&(var))
+    #define STM_READ_F(var) IP2F(TxReadWrapper(STM_SELF, (vintp*)FP2IPP(&(var))))
+    #define STM_READ_P(var) IP2VP(TxReadWrapper(STM_SELF, (vintp*)(void*)&(var)))
   #endif
 
   #if LWM_TRACK_WRITES == 1
-    // TODO
+    #define STM_WRITE(var, val) TxWriteWrapper(STM_SELF, (vintp*)(void*)&(var), (intptr_t)(val))
+    #define STM_WRITE_F(var, val) TxWriteWrapper(STM_SELF, (vintp*)FP2IPP(&(var)), F2IP(val))
+    #define STM_WRITE_P(var, val) TxWriteWrapper(STM_SELF, (vintp*)(void*)&(var), VP2IP(val))
   #endif
 #endif
 

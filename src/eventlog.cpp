@@ -8,7 +8,7 @@
  * @author    Jan Fiedor (fiedorjan@centrum.cz)
  * @date      Created 2014-06-13
  * @date      Last Update 2014-06-24
- * @version   0.8.2
+ * @version   0.8.3
  */
 
 #include "eventlog.h"
@@ -152,6 +152,16 @@ void printStats()
           ++stats.txs[txid].aborts;
           ++stats.txs[txid].ptaborts[tid];
           txid = -1;
+          break;
+#endif
+#if LWM_TRACK_READS == 1
+        case TX_READ:
+          assert(txid != -1);
+          break;
+#endif
+#if LWM_TRACK_WRITES == 1
+        case TX_WRITE:
+          assert(txid != -1);
           break;
 #endif
         default:
