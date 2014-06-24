@@ -1,18 +1,19 @@
 /**
- * @brief Contains implementation of lightweight monitoring functions.
+ * @brief Contains implementation of functions for collecting statistics.
  *
- * A file containing implementation of lightweight monitoring functions.
+ * A file containing implementation of functions for collecting statistics.
  *
- * @file      lwm.cpp
+ * @file      statscollector.cpp
  * @author    Jan Fiedor (fiedorjan@centrum.cz)
  * @date      Created 2014-06-19
- * @date      Last Update 2014-06-23
- * @version   0.3
+ * @date      Last Update 2014-06-24
+ * @version   0.3.1
  */
 
-#include "lwm.h"
+#include "statscollector.h"
 
-#include "stats.h"
+#include "lwm.h"
+#include "statsprinter.h"
 
 #if LWM_TYPE == LWM_FAST_PER_TX_TYPE_ABORTS
 TxInfo g_stats[LWM_MAX_THREADS][LWM_MAX_TX_TYPES];
@@ -44,4 +45,4 @@ void printStats()
 }
 #endif
 
-/** End of file lwm.cpp **/
+/** End of file statscollector.cpp **/

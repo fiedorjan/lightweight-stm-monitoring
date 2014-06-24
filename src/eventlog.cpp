@@ -8,7 +8,7 @@
  * @author    Jan Fiedor (fiedorjan@centrum.cz)
  * @date      Created 2014-06-13
  * @date      Last Update 2014-06-24
- * @version   0.8.0.1
+ * @version   0.8.1
  */
 
 #include "eventlog.h"
@@ -18,7 +18,7 @@
 #include <vector>
 
 #include "config.h"
-#include "stats.h"
+#include "statsprinter.h"
 
 #if LWM_TYPE == LWM_EVT_LOG_PER_TX_TYPE_ABORTS
   typedef EventType Event;

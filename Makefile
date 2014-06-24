@@ -4,8 +4,8 @@
 # File:      Makefile
 # Author:    Jan Fiedor (fiedorjan@centrum.cz)
 # Date:      Created 2014-06-12
-# Date:      Last Update 2014-06-23
-# Version:   0.4.4
+# Date:      Last Update 2014-06-24
+# Version:   0.4.5
 #
 
 # Settings
@@ -34,9 +34,9 @@ lwm: lwm-lib tl2-lwm stamp-lwm
 # Lightweight monitoring library
 lwm-lib:
 	$(CPP) $(LWM_CPPFLAGS) -c src/eventlog.cpp
-	$(CPP) $(LWM_CPPFLAGS) -c src/lwm.cpp
-	$(CPP) $(LWM_CPPFLAGS) -c src/stats.cpp
-	ar cr lib$(LWM_LIB_NAME).a eventlog.o lwm.o stats.o
+	$(CPP) $(LWM_CPPFLAGS) -c src/statscollector.cpp
+	$(CPP) $(LWM_CPPFLAGS) -c src/statsprinter.cpp
+	ar cr lib$(LWM_LIB_NAME).a eventlog.o statscollector.o statsprinter.o
 
 # TL2 library with no modifications
 tl2: tl2-compile

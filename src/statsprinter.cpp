@@ -10,7 +10,7 @@
  * @version   0.1
  */
 
-#include "stats.h"
+#include "statsprinter.h"
 
 #include <iostream>
 

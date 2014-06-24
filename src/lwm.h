@@ -7,7 +7,7 @@
  * @author    Jan Fiedor (fiedorjan@centrum.cz)
  * @date      Created 2014-06-19
  * @date      Last Update 2014-06-24
- * @version   0.3.3
+ * @version   0.3.4
  */
 
 #ifndef __LWM_H__
@@ -17,13 +17,7 @@
 #include "defs.h"
 
 #if LWM_TYPE == LWM_FAST_PER_TX_TYPE_ABORTS
-  typedef struct TxInfo_s
-  {
-    tx_op_counter_t starts;
-    tx_op_counter_t commits;
-  } TxInfo;
-
-  extern TxInfo g_stats[LWM_MAX_THREADS][LWM_MAX_TX_TYPES];
+  #include "statscollector.h"
 
   #define STM_BEGIN(isReadOnly) \
     do { \
