@@ -6,8 +6,8 @@
  * @file      stats.cpp
  * @author    Jan Fiedor (fiedorjan@centrum.cz)
  * @date      Created 2014-06-23
- * @date      Last Update 2014-06-23
- * @version   0.1
+ * @date      Last Update 2014-06-24
+ * @version   0.2
  */
 
 #include "statsprinter.h"
@@ -38,6 +38,8 @@ void printGlobalStats(const Stats& stats)
   std::cout << "  Starts: " << stats.starts << "\n";
   std::cout << "  Commits: " << stats.commits << "\n";
   std::cout << "  Aborts: " << stats.aborts << "\n";
+  std::cout << "  Reads: " << stats.reads << "\n";
+  std::cout << "  Writes: " << stats.writes << "\n";
 }
 
 void printPerTxTypeStats(const Stats& stats)
@@ -55,6 +57,10 @@ void printPerTxTypeStats(const Stats& stats)
         << toString(stats.txs[txid].ptcommits) << "]\n";
       std::cout << "    Aborts: " << stats.txs[txid].aborts << " ["
         << toString(stats.txs[txid].ptaborts) << "]\n";
+      std::cout << "    Reads: " << stats.txs[txid].reads << " ["
+        << toString(stats.txs[txid].ptreads) << "]\n";
+      std::cout << "    Writes: " << stats.txs[txid].writes << " ["
+        << toString(stats.txs[txid].ptwrites) << "]\n";
     }
   }
 }

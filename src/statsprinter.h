@@ -6,8 +6,8 @@
  * @file      stats.h
  * @author    Jan Fiedor (fiedorjan@centrum.cz)
  * @date      Created 2014-06-23
- * @date      Last Update 2014-06-23
- * @version   0.1
+ * @date      Last Update 2014-06-24
+ * @version   0.2
  */
 
 #ifndef __STATS_H__
@@ -26,6 +26,8 @@ typedef struct TxStats_s
   tx_op_counter_t starts = 0; //!< Number of started transactions.
   tx_op_counter_t commits = 0; //!< Number of committed transactions.
   tx_op_counter_t aborts = 0; //!< Number of aborted transactions.
+  tx_op_counter_t reads = 0; //!< Number of transactional reads.
+  tx_op_counter_t writes = 0; //!< Number of transactional writes.
   /**
    * @brief Number of started transactions (per-thread).
    */
@@ -38,6 +40,14 @@ typedef struct TxStats_s
    * @brief Number of aborted transactions (per-thread).
    */
   std::vector< tx_op_counter_t > ptaborts;
+  /**
+   * @brief Number of transactional reads (per-thread).
+   */
+  std::vector< tx_op_counter_t > ptreads;
+  /**
+   * @brief Number of transactional writes (per-thread).
+   */
+  std::vector< tx_op_counter_t > ptwrites;
 } TxStats;
 
 /**
@@ -48,6 +58,8 @@ typedef struct Stats_s
   tx_op_counter_t starts = 0; //!< Number of started transactions.
   tx_op_counter_t commits = 0; //!< Number of committed transactions.
   tx_op_counter_t aborts = 0; //!< Number of aborted transactions.
+  tx_op_counter_t reads = 0; //!< Number of transactional reads.
+  tx_op_counter_t writes = 0; //!< Number of transactional writes.
   TxStats txs[LWM_MAX_TX_TYPES]; //!< Statistics for each transaction type.
 } Stats;
 
