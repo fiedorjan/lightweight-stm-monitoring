@@ -4,8 +4,8 @@
 # File:      Makefile
 # Author:    Jan Fiedor (fiedorjan@centrum.cz)
 # Date:      Created 2014-06-12
-# Date:      Last Update 2014-06-24
-# Version:   0.4.5
+# Date:      Last Update 2014-06-25
+# Version:   0.4.6
 #
 
 # Settings
@@ -45,10 +45,10 @@ tl2: tl2-compile
 tl2-lwm: tl2-patch tl2-compile tl2-restore
 
 tl2-patch:
-	mv -n $(TL2_HOME)/Makefile $(TL2_HOME)/Makefile.orig
+	test ! -f $(TL2_HOME)/Makefile.orig && mv $(TL2_HOME)/Makefile $(TL2_HOME)/Makefile.orig
 	cp $(TL2_HOME)/Makefile.orig $(TL2_HOME)/Makefile
 	sed -i -e 's|^CFLAGS.*|CFLAGS  := -g -Wall -Winline -O3 -I$(shell pwd)/src|' $(TL2_HOME)/Makefile
-	mv -n $(TL2_HOME)/tl2.c $(TL2_HOME)/tl2.c.orig
+	test ! -f $(TL2_HOME)/tl2.c.orig && mv $(TL2_HOME)/tl2.c $(TL2_HOME)/tl2.c.orig
 	cp $(TL2_HOME)/tl2.c.orig $(TL2_HOME)/tl2.c
 	patch -d $(TL2_HOME) -u -i $(shell pwd)/src/tl2.patch
 
@@ -66,13 +66,13 @@ stamp: stamp-setup stamp-compile stamp-cleanup
 stamp-lwm: stamp-patch stamp-compile stamp-restore
 
 stamp-setup:
-	mv -n $(STAMP_HOME)/common/Defines.common.mk $(STAMP_HOME)/common/Defines.common.mk.orig
+	test ! -f $(STAMP_HOME)/common/Defines.common.mk.orig && mv $(STAMP_HOME)/common/Defines.common.mk $(STAMP_HOME)/common/Defines.common.mk.orig
 	cp $(STAMP_HOME)/common/Defines.common.mk.orig $(STAMP_HOME)/common/Defines.common.mk
 	sed -i -e 's|^STM.*|STM := $(TL2_HOME)|' $(STAMP_HOME)/common/Defines.common.mk
 
 stamp-patch: stamp-setup
 	sed -i -e 's|^CFLAGS   += -I.*|CFLAGS   += -I$$(LIB) -I$(shell pwd)/src|' $(STAMP_HOME)/common/Defines.common.mk
-	mv -n $(STAMP_HOME)/common/Makefile.stm $(STAMP_HOME)/common/Makefile.stm.orig
+	test ! -f $(STAMP_HOME)/common/Makefile.stm.orig && mv $(STAMP_HOME)/common/Makefile.stm $(STAMP_HOME)/common/Makefile.stm.orig
 	cp $(STAMP_HOME)/common/Makefile.stm.orig $(STAMP_HOME)/common/Makefile.stm
 	sed -i -e 's|^LIBS.*|LIBS     += -ltl2 -l$(LWM_LIB_NAME)|' $(STAMP_HOME)/common/Makefile.stm
 	sed -i -e 's|^LDFLAGS.*|LDFLAGS  += -L$$(STM) -L$(shell pwd)|' $(STAMP_HOME)/common/Makefile.stm
