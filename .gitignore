@@ -1,5 +1,5 @@
+scripts/
 stamp*/
 tl2*/
 *.a
 *.o
-*.sh
