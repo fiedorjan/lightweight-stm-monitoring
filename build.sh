@@ -5,11 +5,11 @@
 # Author:
 #   Jan Fiedor
 # Version:
-#   0.1
+#   0.2
 # Created:
 #   01.07.2014
 # Last Update:
-#   01.07.2014
+#   09.07.2014
 #
 
 # Settings section
@@ -26,6 +26,28 @@ STAMP_PROGRAMS=("bayes genome intruder kmeans labyrinth ssca2 vacation yada")
 
 # Functions section
 # -----------------
+
+#
+# Description:
+#   Terminates the script.
+# Parameters:
+#   [STRING] A message describing the reason why the script was terminated.
+# Output:
+#   An error message containing the reason of the termination.
+# Return:
+#   Nothing
+#
+terminate()
+{
+  # Print the error (the reason of the termination)
+  if [ -c /dev/stderr ]; then
+    echo -e "\e[1;31merror: \e[0m$1" 1>&2
+  else
+    echo -e "error: $1" 1>&2
+  fi
+
+  exit 1
+}
 
 #
 # Description:
@@ -145,6 +167,31 @@ build()
 
 # Program section
 # ---------------
+
+# Default values for optional parameters
+ENVIRONMENT=native
+
+# Process optional parameters
+until [ -z "$1" ]; do
+  case "$1" in
+    "--environment")
+      if [ -z "$2" ]; then
+        terminate "missing environment."
+      fi
+      if ! [[ "$2" =~ ^anaconda|native$ ]]; then
+        terminate "environment must be anaconda or native."
+      fi
+      ENVIRONMENT=$2
+      shift
+      ;;
+    *)
+      break;
+      ;;
+  esac
+
+  # Move to the next parameter
+  shift
+done
 
 # Check where are the sources of the STAMP benchmark 
 if [ -z "$STAMP_HOME" ]; then
