@@ -4,3 +4,5 @@ stamp*/
 tl2*/
 *.a
 *.o
+*.tar.gz
+*.tgz
