@@ -5,7 +5,7 @@
 # Author:
 #   Jan Fiedor
 # Version:
-#   0.2
+#   0.2.1
 # Created:
 #   01.07.2014
 # Last Update:
@@ -192,6 +192,22 @@ until [ -z "$1" ]; do
   # Move to the next parameter
   shift
 done
+
+# Check if we should use the ANaConDA environment to compile the programs
+if [ "$ENVIRONMENT" == "anaconda" ]; then
+  # Check where are the scripts to setup the ANaConDA environment
+  if [ -z "$ANACONDA_TOOLS_HOME" ]; then
+    ANACONDA_TOOLS_HOME="../anaconda-tools"
+  fi
+
+  # Load the scripts to setup the ANaConDA environment
+  source $ANACONDA_TOOLS_HOME/utils.sh
+
+  # Initialize the ANaConDA environment
+  env_init
+  # Switch to the GCC compiler used by ANaConDA
+  switch_gcc $GCC_HOME
+fi
 
 # Check where are the sources of the STAMP benchmark 
 if [ -z "$STAMP_HOME" ]; then
