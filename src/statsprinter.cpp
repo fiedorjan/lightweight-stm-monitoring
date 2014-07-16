@@ -6,13 +6,14 @@
  * @file      stats.cpp
  * @author    Jan Fiedor (fiedorjan@centrum.cz)
  * @date      Created 2014-06-23
- * @date      Last Update 2014-06-24
- * @version   0.2
+ * @date      Last Update 2014-07-16
+ * @version   0.2.0.1
  */
 
 #include "statsprinter.h"
 
 #include <iostream>
+#include <string>
 
 template < typename T >
 inline
