@@ -8,7 +8,7 @@
  * @author    Jan Fiedor (fiedorjan@centrum.cz)
  * @date      Created 2014-06-13
  * @date      Last Update 2014-07-16
- * @version   0.9
+ * @version   0.9.1
  */
 
 #include "eventlog.h"
@@ -199,7 +199,7 @@ void printStats()
           assert(false);
           break;
       }
-    }
+    } // End of 'for each type of transactions'
 
 #if LWM_TRACK_ABORTS != 1
     for (int txid = 0; txid < LWM_MAX_TX_TYPES; txid++)
@@ -208,6 +208,12 @@ void printStats()
       stats.txs[txid].aborts = (stats.txs[txid].starts - stats.txs[txid].commits);
       stats.txs[txid].ptaborts.push_back(stats.txs[txid].ptstarts[tid] - stats.txs[txid].ptcommits[tid]);
     }
+#endif
+
+#if LWM_COLLECT_TIMESTAMPS == 1 && LWM_COMPUTE_TX_UTILIZATION == 1
+    // Compute the time spent executing the program as a time between the first
+    // and the last usage of a TM operation (time relevant for the utilisation)
+    stats.time += (g_eventLog[tid].back().ts - g_eventLog[tid].front().ts);
 #endif
 
 #endif

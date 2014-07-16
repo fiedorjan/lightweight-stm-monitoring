@@ -7,7 +7,7 @@
  * @author    Jan Fiedor (fiedorjan@centrum.cz)
  * @date      Created 2014-06-23
  * @date      Last Update 2014-07-16
- * @version   0.3
+ * @version   0.3.1
  */
 
 #ifndef __STATS_H__
@@ -64,6 +64,7 @@ typedef struct Stats_s
   tx_op_counter_t writes = 0; //!< Number of transactional writes.
   timestamp_t avglength = 0; //!< Average length of executed transactions.
   timestamp_t utilization = 0; //!< Amount of time spent in transactions.
+  timestamp_t time = 0; //!< Amount of time spent executing the program.
   TxStats txs[LWM_MAX_TX_TYPES]; //!< Statistics for each transaction type.
 } Stats;
 
