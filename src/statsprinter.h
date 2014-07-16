@@ -6,8 +6,8 @@
  * @file      stats.h
  * @author    Jan Fiedor (fiedorjan@centrum.cz)
  * @date      Created 2014-06-23
- * @date      Last Update 2014-06-24
- * @version   0.2
+ * @date      Last Update 2014-07-16
+ * @version   0.3
  */
 
 #ifndef __STATS_H__
@@ -28,6 +28,8 @@ typedef struct TxStats_s
   tx_op_counter_t aborts = 0; //!< Number of aborted transactions.
   tx_op_counter_t reads = 0; //!< Number of transactional reads.
   tx_op_counter_t writes = 0; //!< Number of transactional writes.
+  timestamp_t avglength = 0; //!< Average length of executed transactions.
+  timestamp_t utilization = 0; //!< Amount of time spent in transactions.
   /**
    * @brief Number of started transactions (per-thread).
    */
@@ -60,6 +62,8 @@ typedef struct Stats_s
   tx_op_counter_t aborts = 0; //!< Number of aborted transactions.
   tx_op_counter_t reads = 0; //!< Number of transactional reads.
   tx_op_counter_t writes = 0; //!< Number of transactional writes.
+  timestamp_t avglength = 0; //!< Average length of executed transactions.
+  timestamp_t utilization = 0; //!< Amount of time spent in transactions.
   TxStats txs[LWM_MAX_TX_TYPES]; //!< Statistics for each transaction type.
 } Stats;
 

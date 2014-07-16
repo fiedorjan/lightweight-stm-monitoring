@@ -7,7 +7,7 @@
  * @author    Jan Fiedor (fiedorjan@centrum.cz)
  * @date      Created 2014-06-23
  * @date      Last Update 2014-07-16
- * @version   0.2.0.1
+ * @version   0.3
  */
 
 #include "statsprinter.h"
@@ -41,6 +41,9 @@ void printGlobalStats(const Stats& stats)
   std::cout << "  Aborts: " << stats.aborts << "\n";
   std::cout << "  Reads: " << stats.reads << "\n";
   std::cout << "  Writes: " << stats.writes << "\n";
+  std::cout << "  Average length of transactions: " << stats.avglength << "\n";
+  std::cout << "  Amount of time spent in transactions: " << stats.utilization
+    << "\n";
 }
 
 void printPerTxTypeStats(const Stats& stats)
@@ -62,6 +65,10 @@ void printPerTxTypeStats(const Stats& stats)
         << toString(stats.txs[txid].ptreads) << "]\n";
       std::cout << "    Writes: " << stats.txs[txid].writes << " ["
         << toString(stats.txs[txid].ptwrites) << "]\n";
+      std::cout << "    Average length of transactions: "
+        << stats.txs[txid].avglength << "\n";
+      std::cout << "    Amount of time spent in transactions: "
+        << stats.txs[txid].utilization << "\n";
     }
   }
 }
