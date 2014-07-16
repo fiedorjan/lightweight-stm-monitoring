@@ -7,8 +7,8 @@
  * @file      eventlog.cpp
  * @author    Jan Fiedor (fiedorjan@centrum.cz)
  * @date      Created 2014-06-13
- * @date      Last Update 2014-06-24
- * @version   0.8.4
+ * @date      Last Update 2014-07-16
+ * @version   0.9
  */
 
 #include "eventlog.h"
@@ -74,6 +74,10 @@ void logEvent(thread_id_t tid, EventType type, tx_type_t txid TIMESTAMP_PARAM)
 void printStats()
 {
   Stats stats;
+
+#if LWM_COLLECT_TIMESTAMPS == 1 && (LWM_COMPUTE_AVG_TX_LENGTH == 1 || LWM_COMPUTE_TX_UTILIZATION == 1)
+  timestamp_t lastStartTs = 0;
+#endif
 
   for (int tid = 0; tid < LWM_MAX_THREADS; tid++)
   {
@@ -145,11 +149,22 @@ void printStats()
           ++stats.starts;
           ++stats.txs[it->txid].starts;
           ++stats.txs[it->txid].ptstarts[tid];
+#if LWM_COLLECT_TIMESTAMPS == 1 && (LWM_COMPUTE_AVG_TX_LENGTH == 1 || LWM_COMPUTE_TX_UTILIZATION == 1)
+          lastStartTs = it->ts; // Save the time of the last started transaction
+#endif
           break;
         case TX_COMMIT:
           ++stats.commits;
           ++stats.txs[it->txid].commits;
           ++stats.txs[it->txid].ptcommits[tid];
+#if LWM_COLLECT_TIMESTAMPS == 1 && LWM_COMPUTE_AVG_TX_LENGTH == 1
+          // Update the amount of time spent in committed transactions
+          stats.txs[it->txid].avglength += (it->ts - lastStartTs);
+#endif
+#if LWM_COLLECT_TIMESTAMPS == 1 && LWM_COMPUTE_TX_UTILIZATION == 1
+          // Update the amount of time spent in committed transactions
+          stats.txs[it->txid].utilization += (it->ts - lastStartTs);
+#endif
           break;
 #if LWM_TRACK_ABORTS == 1
         case TX_ABORT:
@@ -157,6 +172,10 @@ void printStats()
           ++stats.aborts;
           ++stats.txs[txid].aborts;
           ++stats.txs[txid].ptaborts[tid];
+#if LWM_COLLECT_TIMESTAMPS == 1 && LWM_COMPUTE_TX_UTILIZATION == 1
+          // Update the amount of time spent in aborted transactions
+          stats.txs[txid].utilization += (it->ts - lastStartTs);
+#endif
           txid = -1;
           break;
 #endif
@@ -192,7 +211,28 @@ void printStats()
 #endif
 
 #endif
-  }
+  } // End of 'for each thread'
+
+#if LWM_COLLECT_TIMESTAMPS == 1 && (LWM_COMPUTE_AVG_TX_LENGTH == 1 || LWM_COMPUTE_TX_UTILIZATION == 1)
+  for (int txid = 0; txid < LWM_MAX_TX_TYPES; txid++)
+  { // Compute the average length of each type of transactions
+#if LWM_COMPUTE_AVG_TX_LENGTH == 1
+    stats.avglength += stats.txs[txid].avglength;
+
+    if (stats.txs[txid].commits != 0)
+      stats.txs[txid].avglength = stats.txs[txid].avglength / stats.txs[txid].commits;
+#endif
+
+#if LWM_COMPUTE_TX_UTILIZATION == 1
+    stats.utilization += stats.txs[txid].utilization;
+#endif
+  } // End of 'for each type of transactions'
+
+#if LWM_COMPUTE_AVG_TX_LENGTH == 1
+  stats.avglength = stats.avglength / stats.commits;
+#endif
+
+#endif
 
   printGlobalStats(stats);
   printPerTxTypeStats(stats);
